@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cyl.it.user.dao.UserInfoDao">
+    <sql id="base_query_column">
+        SELECT
+            user_id   AS userId ,
+            username  AS username ,
+            password  AS password,
+            open_id   AS openId ,
+            role      AS role
+        FROM  user_info_t
+    </sql>
+
+
+    <sql id="base_query_condition">
+        WHERE  1 = 1
+        <if test="userId != null">
+           AND user_id = #{userId}
+        </if>
+        <if test="username != null">
+            AND upper(username) LIKE upper(CONCAT('%',#{username, jdbcType=VARCHAR} , '%'))
+        </if>
+        <if test="password != null">
+            AND password = #{password}
+        </if>
+        <if test="openId != null">
+            AND open_id = #{openId}
+        </if>
+        <if test="role != null">
+            AND role = #{role}
+        </if>
+    </sql>
+
+    <select id="queryUserInfoByCondition" resultType="com.cyl.it.user.dto.UserInfoDTO"
+            parameterType="com.cyl.it.user.co.UserInfoCriteriaCO">
+        <include refid="base_query_column"/>
+        <include refid="base_query_condition"/>
+    </select>
+
+
+</mapper>
