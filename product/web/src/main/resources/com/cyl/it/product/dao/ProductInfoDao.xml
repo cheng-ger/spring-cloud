@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cyl.it.product.dao.ProductInfoDao">
+
+    <sql id="base_query_column">
+          SELECT
+            product_id          AS     productId           ,
+            product_name_cn     AS     productNameCn      ,
+            product_name_en     AS     productNameEn      ,
+            product_price       AS     productPrice        ,
+            product_stock       AS     productStock        ,
+            product_desc        AS     productDesc         ,
+            product_icon        AS     productIcon         ,
+            status              AS     status              ,
+            category_id         AS     categoryId
+          FROM  product_info_t
+
+    </sql>
+
+
+    <select id="queryAllByProductCondition"  resultType="com.cyl.it.product.dto.ProductInfoDto">
+        <include refid="base_query_column"/>
+        <include refid="base_query_condition"/>
+    </select>
+
+    <sql id="base_query_condition">
+        where 1=1
+        <if test="productId != null ">
+           AND   product_id = #{productId , jdbcType=NUMERIC}
+        </if>
+        <if test="productNameCn != null and  productNameCn.trim()!=''">
+           AND    upper(product_name_cn) like  upper(concat('%', #{productNameCn , jdbcType=VARCHAR} ,'%'))
+        </if>
+        <if test="productNameEn != null and  productNameEn.trim()!=''">
+            AND    upper(product_name_en) like  upper(concat('%', #{productNameEn , jdbcType=VARCHAR} ,'%'))
+        </if>
+        <if test="status !=null ">
+            AND   status = #{status  ,jdbcType=CHAR}
+        </if>
+        <if test="categoryId != null">
+            AND    category_id = #{categoryId , jdbcType=NUMERIC}
+        </if>
+        <if test="productIdList != null">
+             AND product_id in
+            <foreach collection="productIdList" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+    </sql>
+
+    <sql id="base_update_value">
+
+       <!-- <if test="productId != null ">
+              product_id = #{productId , jdbcType=NUMERIC}    ,
+        </if>-->
+        <if test="productNameCn != null and  productNameCn.trim()!=''">
+             product_name_cn = #{productNameCn , jdbcType=VARCHAR} ,
+        </if>
+        <if test="productNameEn != null and  productNameEn.trim()!=''">
+              product_name_en =  #{productNameEn , jdbcType=VARCHAR} ,
+        </if>
+        <if test="status !=null ">
+              status = #{status  ,jdbcType=CHAR} ,
+        </if>
+        <if test="productStock !=null ">
+            product_stock = #{productStock  ,jdbcType=NUMERIC} ,
+        </if>
+        <if test="categoryId != null">
+              category_id = #{categoryId , jdbcType=NUMERIC} ,
+        </if>
+              update_time   =   current_date ,
+    </sql>
+
+    <update id="updateProductInfo" parameterType="com.cyl.it.product.co.ProductInfoCO">
+        UPDATE  product_info_t
+        <set>
+            <include refid="base_update_value"/>
+        </set>
+        WHERE  product_id = #{productId , jdbcType=NUMERIC}
+    </update>
+</mapper>

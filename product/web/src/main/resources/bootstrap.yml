@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: product
+#  应用名加这个获取 ${name}-${profile} [product-sit.yml]  config 配置下远程仓库的对应配置文件
+#  product.xml 相当与通用配置  不管怎么都会有，会与其他配置文件进行合并
+  cloud:
+    config:
+      profile: dev
+      discovery:
+        enabled: true
+        service-id: config
+  rabbitmq:
+    host: 192.168.99.100
+    username: guest
+    password: guest
+    port: 5672

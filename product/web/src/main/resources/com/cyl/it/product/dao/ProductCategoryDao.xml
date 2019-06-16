@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cyl.it.product.dao.ProductCategoryDao">
+    <sql id="base_query_column">
+          SELECT
+          category_id             AS        categoryId     ,
+          category_name_cn        AS        categoryNameCn ,
+          category_name_en        AS        categoryNameEn ,
+          status                  AS        status
+          FROM   product_category_t
+
+    </sql>
+
+
+    <select id="queryAllByProductCategoryCondition"  resultType="com.cyl.it.product.dto.ProductCategoryDto">
+        <include refid="base_query_column"/>
+        <include refid="base_query_condition"/>
+    </select>
+
+    <sql id="base_query_condition">
+        where 1=1
+        <if test="categoryId != null ">
+            AND   product_id = #{productId , jdbcType=NUMERIC}
+        </if>
+        <if test="categoryNameCn != null and  categoryNameCn.trim()!=''">
+            AND    upper(category_name_cn) like  upper(concat('%', #{categoryNameCn , jdbcType=VARCHAR} ,'%'))
+        </if>
+        <if test="categoryNameEn != null and  categoryNameEn.trim()!=''">
+            AND    upper(category_name_en) like  upper(concat('%', #{categoryNameEn , jdbcType=VARCHAR} ,'%'))
+        </if>
+        <if test="status !=null ">
+            AND   status = #{status  ,jdbcType=CHAR}
+        </if>
+    </sql>
+</mapper>
