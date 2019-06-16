@@ -1,0 +1,21 @@
+
+server:
+  port: 60003
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+spring:
+  application:
+    name: config
+
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/cheng-ger/spring-cloud-config.git
+          username: cheng-ger
+          password: 201314cyl
+          basedir:  D:\git\gitTest\ssppd\basedir
