@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cyl.it.order.dao.OrderDetailDao">
+    <insert id="insertOneOrderDetail" parameterType="com.cyl.it.order.co.OrderDetailCO">
+
+          INSERT INTO  order_detail_t(
+                  order_id              ,
+                  product_id            ,
+                  product_name_cn       ,
+                  product_name_en       ,
+                  product_price         ,
+                  product_quantity      ,
+                  product_icon          ,
+                  create_by             ,
+                  create_time           ,
+                  update_time           ,
+                  last_update_by
+          ) values  (
+                  #{orderId , jdbcType=NUMERIC},
+                  #{productId , jdbcType=NUMERIC},
+                  #{productNameCn , jdbcType=VARCHAR},
+                  #{productNameEn, jdbcType=VARCHAR},
+                  #{productPrice , jdbcType=NUMERIC},
+                  #{productQuantity, jdbcType=NUMERIC},
+                  #{productIcon , jdbcType=VARCHAR},
+                  #{createBy, jdbcType=VARCHAR},
+                  current_date ,
+                  current_timestamp ,
+                  #{lastUpdateBy, jdbcType=VARCHAR}
+          )
+
+    </insert>
+
+    <sql id="query_base_column">
+        SELECT
+            detail_id          AS    detailId,
+            order_id           AS    orderId ,
+            product_id         AS    productId ,
+            product_name_cn    AS    productNameCn  ,
+            product_name_en    AS    productNameEn,
+            product_price      AS    productPrice ,
+            product_quantity   AS    productQuantity,
+            product_icon       AS    productIcon
+        FROM  order_detail_t
+    </sql>
+
+    <sql id="query_base_condition">
+        WHERE 1 = 1
+            <if test="detailId != null">
+                    AND detail_id = #{detailId , jdbcType=NUMERIC}
+            </if>
+            <if test="orderId != null">
+                    AND order_id = #{orderId , jdbcType=NUMERIC}
+            </if>
+            <if test="productId != null ">
+                    AND product_id = #{productId ,  jdbcType=NUMERIC}
+            </if>
+            <if test="productNameCn != null">
+                    AND upper(product_name_cn) like upper(concat('%' , #{productNameCn , jdbcType=VARCHAR} , '%'))
+            </if>
+            <if test="productNameEn != null">
+                    AND upper(product_name_en) like upper(concat('%' ,  #{productNameEn, jdbcType=VARCHAR}, '%'))
+            </if>
+            <if test="productPrice != null">
+                    AND product_price = #{productPrice , jdbcType=NUMERIC}
+            </if>
+    </sql>
+
+    <select id="queryOrderDetailByCondition" resultType="com.cyl.it.order.dto.OrderDetailDto">
+          <include refid="query_base_column" />
+          <include refid="query_base_condition" />
+    </select>
+
+</mapper>

@@ -1,0 +1,91 @@
+appname: order
+
+server:
+  port: 60002
+
+spring:
+  application:
+    name: ${appname}
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    username: root
+    password: 111111
+    url: jdbc:mysql://127.0.0.1:3306/order
+#    druid:
+#      initial-size: 2
+#      min-idle: 1
+#      max-active: 20
+#      test-on-borrow: true
+#      max-wait: 10000
+#      time-between-eviction-runs-millis: 60000
+#      min-evictable-idle-time-millis: 300000
+#      validation-query: select 1 from dual
+    #      filters: stat,wall,log4j
+#      connection-init-sqls: set names utf8mb4
+
+#    type: com.alibaba.druid.pool.DruidDataSource
+  rabbitmq:
+    host: 192.168.99.100
+    username: guest
+    password: guest
+    port: 5672
+  redis:
+    database: 0
+    port: 6379
+    host: 127.0.0.1
+  cloud:
+    stream:
+      bindings:
+        myMessage:
+          group: myMessageA
+        myObject:
+          group: myObjectA
+          content-type: application/json
+        reSend:
+          group: sendA
+          content-type: application/json
+        reSendTo:
+          group: order
+          content-type: application/json  
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+  instance:
+    prefer-ip-address: true
+
+
+mybatis:
+  #此标签配置  对应的sql.xml
+  mapper-locations: classpath:com/cyl/it/order/dao/*Dao.xml
+  #此标签配置  对应的sql程序接口 interface
+  type-aliases-package: com/cyl/it/order/dao
+
+
+pagehelper:
+  helper-dialect: mysql
+  reasonable: true
+  support-methods-arguments: true
+  params: count=countSql
+
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 3000
+# 自定义的commandKey（默认与方法名一致）
+    getTimeOut:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 1000
+
+feign:
+  hystrix:
+    enabled: true
+
+logging:
+  level:
+    org.springframework.cloud.netflix.feign: debug
