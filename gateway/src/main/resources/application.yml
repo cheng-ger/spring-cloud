@@ -1,0 +1,37 @@
+server:
+  port: 60004
+
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
+
+spring:
+  application:
+    name: gateway
+  redis:
+    database: 0
+    port: 6379
+    host: localhost
+
+
+zuul:
+  routes:
+    #    随便其名字
+#    manager-app-name:
+#      path: /myproduct/**
+#      serviceId: product
+#    简洁写法
+    product: /myproduct/**
+    order: /myproduct/**
+#    排除某些路由
+  ignored-patterns:
+    - /**/product/m
+    - /**/orderService/hi
+#    全部服务忽略敏感头设置 都可传递cookie
+  sensitive-headers:
+management:
+  security:
+    enabled: false
